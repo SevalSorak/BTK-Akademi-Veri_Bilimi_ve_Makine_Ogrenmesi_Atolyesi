@@ -1,0 +1,75 @@
+## Sistem Güncellemeleri ve Java Kurulum
+apt-get update
+apt-get install default-jre
+java -version
+
+## Zookeeper Kurulum
+apt-get install zookeeperd
+netstat -ant | grep :2181
+systemctl status zookeeper
+echo "status" | nc  localhost 2181 | head -n 1
+
+## Kafka Kurulum
+mkdir /opt/kafka
+cd /opt/kafka
+$ echo "status" | nc  localhost 2181 | head -n 1
+
+
+wget https://ftp kafka 2.11-2.2.2 tgz
+tar -xvf kafka_2.11-2.2.2.tgz
+
+nano /opt/kafka/kafka2.2.2/server.properties
+
+		
+	listeners=PLAINTEXT://0.0.0.0:9092
+
+
+	advertised.listeners=PLAINTEXT://cloıdid:9092
+
+
+
+
+## Sistem Tanımlamaları
+1- nano /etc/profile
+en alta eklenmeli;
+export KAFKA_HOME="/op/kafka/kafka_2.11-2.2.2"
+export PATH="$PATH:${KAFKA_HOME}/bin"
+
+2- nano etc/bash.bash:rc
+en alta eklenmeli
+alias sudo='sudo env PATH="$PATH"'
+
+## Değişiklerin Uygulanması İçin Yeniden Başlatılmalı
+reboot
+
+## Değişiklerin Testi
+
+echo $KAFKA_HOME
+echo $PATH
+
+ln -s $KAFKA_HOME/config/server.properties /etc/kafka.properties
+ls -ln /etc/kafka.properties
+
+## Kafka'yı Başlatmak
+
+kafka-server-start.sh /etc/kafka.properties
+nohup kafka-server-start.sh /etc/kafka.properties &
+ps -ef | grep kafka
+
+## Topic Oluşturma;
+
+kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 3 --topic test-first
+
+## Console Consumer
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-first
+
+## Console Producer
+kafka-console-produser.sh --broker-list localhost:9092 --topic test-first
+
+
+## Uzak erişim için port açmak
+ufw enable
+ufw allow 2181
+ufw allow 22
+ufw allow 9092
+ufw status
